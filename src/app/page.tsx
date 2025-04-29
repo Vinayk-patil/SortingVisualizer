@@ -19,6 +19,9 @@ const SortingVisualizer = () => {
   const [description, setDescription] = useState("");
   const [isRunning, setIsRunning] = useState(false);
   const intervalRef = useRef<number | null>(null);
+  const [activeIndices, setActiveIndices] = useState<number[]>([]);
+  const [swapIndices, setSwapIndices] = useState<number[]>([]);
+    const [sortedIndices, setSortedIndices] = useState<number[]>([]);
 
   useEffect(() => {
     generateRandomArray();
@@ -52,12 +55,18 @@ const SortingVisualizer = () => {
     }
     setStep(0);
     setDescription("");
+        setActiveIndices([]);
+        setSwapIndices([]);
+        setSortedIndices([]);
   };
 
   useEffect(() => {
     if (steps.length > 0) {
       setArray(steps[0]);
       setDescription(getStepDescription(algorithm, 0));
+        setActiveIndices(getStepDetails(algorithm, 0).activeIndices);
+        setSwapIndices(getStepDetails(algorithm, 0).swapIndices);
+        setSortedIndices(getStepDetails(algorithm, 0).sortedIndices);
     }
   }, [steps, algorithm]);
 
@@ -82,6 +91,10 @@ const SortingVisualizer = () => {
       setStep((prevStep) => prevStep + 1);
       setArray(steps[step + 1]);
       setDescription(getStepDescription(algorithm, step + 1));
+        const stepDetails = getStepDetails(algorithm, step + 1);
+        setActiveIndices(stepDetails.activeIndices);
+        setSwapIndices(stepDetails.swapIndices);
+        setSortedIndices(stepDetails.sortedIndices);
     } else {
       setIsRunning(false);
     }
@@ -92,6 +105,10 @@ const SortingVisualizer = () => {
       setStep((prevStep) => prevStep - 1);
       setArray(steps[step - 1]);
       setDescription(getStepDescription(algorithm, step - 1));
+        const stepDetails = getStepDetails(algorithm, step - 1);
+        setActiveIndices(stepDetails.activeIndices);
+        setSwapIndices(stepDetails.swapIndices);
+        setSortedIndices(stepDetails.sortedIndices);
     }
   };
 
@@ -103,48 +120,46 @@ const SortingVisualizer = () => {
     // Implement descriptions for each step of each algorithm
     switch (algorithm) {
       case "bubbleSort":
-        if (step < steps.length) {
-          return `Bubble Sort - Step ${step + 1}`;
-        }
-        return "Bubble Sort Completed";
+        return `Bubble Sort - Step ${step + 1}`;
       case "selectionSort":
-        if (step < steps.length) {
-          return `Selection Sort - Step ${step + 1}`;
-        }
-        return "Selection Sort Completed";
+        return `Selection Sort - Step ${step + 1}`;
       case "insertionSort":
-        if (step < steps.length) {
-          return `Insertion Sort - Step ${step + 1}`;
-        }
-        return "Insertion Sort Completed";
+        return `Insertion Sort - Step ${step + 1}`;
       case "mergeSort":
-        if (step < steps.length) {
-          return `Merge Sort - Step ${step + 1}`;
-        }
-        return "Merge Sort Completed";
+        return `Merge Sort - Step ${step + 1}`;
       case "quickSort":
-        if (step < steps.length) {
-          return `Quick Sort - Step ${step + 1}`;
-        }
-        return "Quick Sort Completed";
+        return `Quick Sort - Step ${step + 1}`;
       default:
         return "";
     }
   };
 
+    const getStepDetails = (algorithm: string, step: number): { activeIndices: number[], swapIndices: number[], sortedIndices: number[] } => {
+        // This is a placeholder; you'll need to implement the logic to track
+        // active comparisons, swaps, and sorted elements for each algorithm and step.
+        return { activeIndices: [], swapIndices: [], sortedIndices: [] };
+    };
+
+
   // Sorting Algorithms with Steps
   const bubbleSortSteps = (arr: number[]): number[][] => {
-    const stepsArray: number[][] = [arr.slice()];
+        const stepsArray: { array: number[], activeIndices: number[], swapIndices: number[], sortedIndices: number[] }[] = [{ array: arr.slice(), activeIndices: [], swapIndices: [], sortedIndices: [] }];
     const n = arr.length;
     for (let i = 0; i < n - 1; i++) {
+            let isSwapped = false;
       for (let j = 0; j < n - i - 1; j++) {
+                stepsArray.push({ array: arr.slice(), activeIndices: [j, j + 1], swapIndices: [], sortedIndices: Array.from({ length: n - i }, (_, k) => k + i) });
         if (arr[j] > arr[j + 1]) {
           [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
-          stepsArray.push(arr.slice());
+                    isSwapped = true;
+                    stepsArray.push({ array: arr.slice(), activeIndices: [j, j + 1], swapIndices: [j, j + 1], sortedIndices: Array.from({ length: n - i }, (_, k) => k + i) });
         }
       }
+            if (!isSwapped) {
+                break;
+            }
     }
-    return stepsArray;
+        return stepsArray.map(step => step.array);
   };
 
   const selectionSortSteps = (arr: number[]): number[][] => {
@@ -283,10 +298,23 @@ const SortingVisualizer = () => {
   }));
 
   const renderCustomLabel = (props: any) => {
-    const { x, y, width, height, value } = props;
+    const { x, y, width, height, value, index } = props;
     const fontSize = Math.min(width / 5, height / 2); // Adjust divisor as needed
     const textAnchor = width > 20 ? 'middle' : 'start'; // Adjust 20 based on minimum bar width you want to display label
     const labelColor = value > 10 ? '#fff' : '#000'; // Adjust 10 based on minimum value you want to display label
+        let barColor = "#8884d8"; // Default bar color
+
+        if (activeIndices.includes(index)) {
+            barColor = 'hsl(var(--active-comparison))'; // Active comparison color
+        }
+
+        if (swapIndices.includes(index)) {
+            barColor = 'hsl(var(--swap))'; // Swap color
+        }
+
+        if (sortedIndices.includes(index)) {
+            barColor = 'hsl(var(--sorted))'; // Sorted color
+        }
 
     return (
       <text
@@ -301,6 +329,25 @@ const SortingVisualizer = () => {
       </text>
     );
   };
+
+    const getBarColor = (index: number): string => {
+        let barColor = "#8884d8"; // Default bar color
+
+        if (activeIndices.includes(index)) {
+            barColor = 'hsl(var(--active-comparison))'; // Active comparison color
+        }
+
+        if (swapIndices.includes(index)) {
+            barColor = 'hsl(var(--swap))'; // Swap color
+        }
+
+        if (sortedIndices.includes(index)) {
+            barColor = 'hsl(var(--sorted))'; // Sorted color
+        }
+
+        return barColor;
+    };
+
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen py-2 bg-secondary">
