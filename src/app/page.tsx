@@ -137,9 +137,9 @@ const SortingVisualizer = () => {
                     const minIndex = getStepDetails(algorithm, step).activeIndices[1];
                     const swap = getStepDetails(algorithm, step).swapIndices.length > 0;
                     if (swap) {
-                        return `Selection Sort: Swapping element ${array[active1]} at index ${active1} with current minimum element ${array[minIndex]} at index ${minIndex}.`;
+                        return `Selection Sort: Swapping element ${array[active1]} (value: ${array[active1]}) with current minimum element ${array[minIndex]} (value: ${array[minIndex]}).`;
                     } else {
-                        return `Selection Sort: Comparing current element ${array[active1]} at index ${active1} with current minimum element ${array[minIndex]} at index ${minIndex}.`;
+                        return `Selection Sort: Comparing current element ${array[active1]} (value: ${array[active1]}) with current minimum element ${array[minIndex]} (value: ${array[minIndex]}).`;
                     }
                 } else {
                     return "Selection Sort: Array is now sorted.";
@@ -193,15 +193,10 @@ const SortingVisualizer = () => {
         }
         else if (algorithm === "selectionSort"){
             if (step < steps.length -1){
-                const n = array.length;
-                const i = Math.floor(step / (n - 1));
-                const j = step % (n - 1);
                 if (steps.length > 0 && step < steps.length){
-                    if (steps[step][i] > steps[step][j + i + 1]){
-                        return {activeIndices: [i, j + i + 1], swapIndices: [i, j + i + 1], sortedIndices: Array.from({ length: i }, (_, k) => k)};
-                    }
-                    else
-                        return {activeIndices: [i, j + i + 1], swapIndices: [], sortedIndices: Array.from({ length: i }, (_, k) => k)};
+                     const stepDetails = stepsDetailed[step];
+                     return {activeIndices: stepDetails.activeIndices, swapIndices: stepDetails.swapIndices, sortedIndices: stepDetails.sortedIndices };
+
                 }
                 else
                      return { activeIndices: [], swapIndices: [], sortedIndices: [] };
@@ -253,24 +248,32 @@ const SortingVisualizer = () => {
         return stepsArray.map(step => step.array);
   };
 
+  const [stepsDetailed, setStepsDetailed] = useState<{ array: number[], activeIndices: number[], swapIndices: number[], sortedIndices: number[] }[]>([]);
+
   const selectionSortSteps = (arr: number[]): number[][] => {
-      const stepsArray: { array: number[], activeIndices: number[], swapIndices: number[], sortedIndices: number[] }[] = [{ array: arr.slice(), activeIndices: [], swapIndices: [], sortedIndices: [] }];
-        const n = arr.length;
-        for (let i = 0; i < n - 1; i++) {
-            let minIndex = i;
-            for (let j = i + 1; j < n; j++) {
-                stepsArray.push({ array: arr.slice(), activeIndices: [j, minIndex], swapIndices: [], sortedIndices: Array.from({ length: i }, (_, k) => k) });
-                if (arr[j] < arr[minIndex]) {
-                    minIndex = j;
-                }
-            }
-            if (minIndex !== i) {
-                [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
-                stepsArray.push({ array: arr.slice(), activeIndices: [i, minIndex], swapIndices: [i, minIndex], sortedIndices: Array.from({ length: i }, (_, k) => k) });
-            }
+    const stepsArray: { array: number[], activeIndices: number[], swapIndices: number[], sortedIndices: number[] }[] = [{ array: arr.slice(), activeIndices: [], swapIndices: [], sortedIndices: [] }];
+    const n = arr.length;
+
+    for (let i = 0; i < n - 1; i++) {
+      let minIndex = i;
+      stepsArray.push({ array: arr.slice(), activeIndices: [i], swapIndices: [], sortedIndices: Array.from({ length: i }, (_, k) => k) });
+
+      for (let j = i + 1; j < n; j++) {
+        stepsArray.push({ array: arr.slice(), activeIndices: [j, minIndex], swapIndices: [], sortedIndices: Array.from({ length: i }, (_, k) => k) });
+        if (arr[j] < arr[minIndex]) {
+          minIndex = j;
         }
-      return stepsArray.map(step => step.array);
+      }
+
+      if (minIndex !== i) {
+        [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
+        stepsArray.push({ array: arr.slice(), activeIndices: [i, minIndex], swapIndices: [i, minIndex], sortedIndices: Array.from({ length: i }, (_, k) => k) });
+      }
+    }
+        setStepsDetailed(stepsArray);
+        return stepsArray.map(step => step.array);
   };
+
 
   const insertionSortSteps = (arr: number[]): number[][] => {
     const stepsArray: number[][] = [arr.slice()];
@@ -517,6 +520,3 @@ const SortingVisualizer = () => {
 };
 
 export default SortingVisualizer;
-
-
-
