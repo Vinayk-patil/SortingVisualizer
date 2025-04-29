@@ -117,26 +117,66 @@ const SortingVisualizer = () => {
   };
 
   const getStepDescription = (algorithm: string, step: number): string => {
-    // Implement descriptions for each step of each algorithm
-    switch (algorithm) {
-      case "bubbleSort":
-        return `Bubble Sort - Step ${step + 1}`;
-      case "selectionSort":
-        return `Selection Sort - Step ${step + 1}`;
-      case "insertionSort":
-        return `Insertion Sort - Step ${step + 1}`;
-      case "mergeSort":
-        return `Merge Sort - Step ${step + 1}`;
-      case "quickSort":
-        return `Quick Sort - Step ${step + 1}`;
-      default:
-        return "";
-    }
-  };
+        switch (algorithm) {
+            case "bubbleSort":
+                if (step < steps.length - 1) {
+                    const active1 = getStepDetails(algorithm, step).activeIndices[0];
+                    const active2 = getStepDetails(algorithm, step).activeIndices[1];
+                    const swap = getStepDetails(algorithm, step).swapIndices.length > 0;
+                    if (swap) {
+                        return `Bubble Sort: Comparing index ${active1} and ${active2}, swapping ${array[active1]} and ${array[active2]} to move larger element to the end.`;
+                    } else {
+                        return `Bubble Sort: Comparing index ${active1} and ${active2}, no swap needed as ${array[active1]} is smaller than or equal to ${array[active2]}.`;
+                    }
+                } else {
+                    return "Bubble Sort: Array is now sorted.";
+                }
+            case "selectionSort":
+                if (step < steps.length - 1) {
+                    return "Selection Sort"; // More descriptive messages to be added
+                } else {
+                    return "Selection Sort: Array is now sorted.";
+                }
+            case "insertionSort":
+                if (step < steps.length - 1) {
+                    return "Insertion Sort"; // More descriptive messages to be added
+                } else {
+                    return "Insertion Sort: Array is now sorted.";
+                }
+            case "mergeSort":
+                if (step < steps.length - 1) {
+                    return "Merge Sort"; // More descriptive messages to be added
+                } else {
+                    return "Merge Sort: Array is now sorted.";
+                }
+            case "quickSort":
+                if (step < steps.length - 1) {
+                    return "Quick Sort"; // More descriptive messages to be added
+                } else {
+                    return "Quick Sort: Array is now sorted.";
+                }
+            default:
+                return "";
+        }
+    };
 
     const getStepDetails = (algorithm: string, step: number): { activeIndices: number[], swapIndices: number[], sortedIndices: number[] } => {
-        // This is a placeholder; you'll need to implement the logic to track
-        // active comparisons, swaps, and sorted elements for each algorithm and step.
+        if (algorithm === "bubbleSort") {
+            if (step < steps.length -1){
+                const n = array.length;
+                const i = Math.floor(step / (n - 1));
+                const j = step % (n - 1);
+                if (steps.length > 0 && step < steps.length){
+                    if (steps[step][j] > steps[step][j + 1])
+                        return { activeIndices: [j, j + 1], swapIndices: [j, j + 1], sortedIndices: Array.from({ length: n - i - 1 }, (_, k) => k + n - i - 1) };
+                    else
+                         return { activeIndices: [j, j + 1], swapIndices: [], sortedIndices: Array.from({ length: n - i - 1 }, (_, k) => k + n - i - 1) };
+                } else
+                return { activeIndices: [], swapIndices: [], sortedIndices: [] };
+            }
+            else
+                 return { activeIndices: [], swapIndices: [], sortedIndices: Array.from({ length: array.length }, (_, k) => k) };
+        }
         return { activeIndices: [], swapIndices: [], sortedIndices: [] };
     };
 
@@ -148,11 +188,11 @@ const SortingVisualizer = () => {
     for (let i = 0; i < n - 1; i++) {
             let isSwapped = false;
       for (let j = 0; j < n - i - 1; j++) {
-                stepsArray.push({ array: arr.slice(), activeIndices: [j, j + 1], swapIndices: [], sortedIndices: Array.from({ length: n - i }, (_, k) => k + i) });
+                stepsArray.push({ array: arr.slice(), activeIndices: [j, j + 1], swapIndices: [], sortedIndices: Array.from({ length: n - i - 1 }, (_, k) => k + n - i - 1) });
         if (arr[j] > arr[j + 1]) {
           [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
                     isSwapped = true;
-                    stepsArray.push({ array: arr.slice(), activeIndices: [j, j + 1], swapIndices: [j, j + 1], sortedIndices: Array.from({ length: n - i }, (_, k) => k + i) });
+                    stepsArray.push({ array: arr.slice(), activeIndices: [j, j + 1], swapIndices: [j, j + 1], sortedIndices: Array.from({ length: n - i - 1 }, (_, k) => k + n - i - 1) });
         }
       }
             if (!isSwapped) {
@@ -425,3 +465,4 @@ const SortingVisualizer = () => {
 };
 
 export default SortingVisualizer;
+
