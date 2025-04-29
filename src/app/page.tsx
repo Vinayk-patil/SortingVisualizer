@@ -302,19 +302,6 @@ const SortingVisualizer = () => {
     const fontSize = Math.min(width / 5, height / 2); // Adjust divisor as needed
     const textAnchor = width > 20 ? 'middle' : 'start'; // Adjust 20 based on minimum bar width you want to display label
     const labelColor = value > 10 ? '#fff' : '#000'; // Adjust 10 based on minimum value you want to display label
-        let barColor = "hsl(var(--default))"; // Default bar color
-
-        if (activeIndices.includes(index)) {
-            barColor = '#FFD700'; // Active comparison color
-        }
-
-        if (swapIndices.includes(index)) {
-            barColor = '#FF4C4C'; // Swap color
-        }
-
-        if (sortedIndices.includes(index)) {
-            barColor = '#4CAF50'; // Sorted color
-        }
 
     return (
       <text
@@ -334,15 +321,15 @@ const SortingVisualizer = () => {
         let barColor = "hsl(var(--default))"; // Default bar color
 
         if (activeIndices.includes(index)) {
-            barColor = '#FFD700'; // Active comparison color
+            barColor = "hsl(var(--active-comparison))"; // Active comparison color
         }
 
         if (swapIndices.includes(index)) {
-            barColor = '#FF4C4C'; // Swap color
+            barColor = "hsl(var(--swap))"; // Swap color
         }
 
         if (sortedIndices.includes(index)) {
-            barColor = '#4CAF50'; // Sorted color
+            barColor = "hsl(var(--sorted))"; // Sorted color
         }
 
         return barColor;
@@ -421,7 +408,7 @@ const SortingVisualizer = () => {
               <XAxis dataKey="index" />
               <YAxis />
               <Tooltip />
-              <Bar dataKey="value" fill="#8884d8">
+              <Bar dataKey="value" fill={getBarColor}>
                 <LabelList dataKey="value" content={renderCustomLabel} />
               </Bar>
             </BarChart>
