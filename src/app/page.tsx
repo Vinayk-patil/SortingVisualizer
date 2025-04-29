@@ -137,9 +137,9 @@ const SortingVisualizer = () => {
                     const minIndex = getStepDetails(algorithm, step).activeIndices[1];
                     const swap = getStepDetails(algorithm, step).swapIndices.length > 0;
                     if (swap) {
-                        return `Selection Sort: Finding the minimum element. Current minimum at index ${minIndex}, swapping with element at index ${active1}.`;
+                        return `Selection Sort: Swapping element ${array[active1]} at index ${active1} with current minimum element ${array[minIndex]} at index ${minIndex}.`;
                     } else {
-                        return `Selection Sort: Finding the minimum element. Comparing current minimum at index ${minIndex} with element at index ${active1}.`;
+                        return `Selection Sort: Comparing current element ${array[active1]} at index ${active1} with current minimum element ${array[minIndex]} at index ${minIndex}.`;
                     }
                 } else {
                     return "Selection Sort: Array is now sorted.";
@@ -517,5 +517,6 @@ const SortingVisualizer = () => {
 };
 
 export default SortingVisualizer;
+
 
 
