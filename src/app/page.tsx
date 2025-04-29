@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { ChevronLeft, ChevronRight, Play, Pause } from "lucide-react";
+import { Chart, CartesianGrid, Line, LineChart, Tooltip, XAxis, YAxis } from 'recharts';
 
 const SortingVisualizer = () => {
   const [arraySize, setArraySize] = useState(50);
@@ -277,6 +278,11 @@ const SortingVisualizer = () => {
     return [];
   };
 
+  const chartData = array.map((value, index) => ({
+    index: index,
+    value: value,
+  }));
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen py-2 bg-secondary">
       <Card className="w-full max-w-4xl shadow-md rounded-lg overflow-hidden">
@@ -344,16 +350,13 @@ const SortingVisualizer = () => {
 
           {/* Bar Visualization */}
           <div className="relative w-full h-64 bg-muted rounded-md flex items-center justify-center overflow-hidden">
-            {array.map((value, index) => (
-              <div
-                key={index}
-                className={cn(
-                  "bg-primary w-[8px] md:w-[12px] lg:w-[16px] mx-[1px] transition-height duration-150 ease-in-out",
-                  getCurrentHighlights().includes(index) ? "bg-accent" : ""
-                )}
-                style={{ height: `${value}%` }}
-              ></div>
-            ))}
+            <LineChart width={500} height={300} data={chartData}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="index" />
+              <YAxis />
+              <Tooltip />
+              <Line type="monotone" dataKey="value" stroke="#8884d8" activeDot={{ r: 8 }} />
+            </LineChart>
           </div>
 
           {/* Textual Explanation */}
