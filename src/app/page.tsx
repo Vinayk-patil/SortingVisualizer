@@ -302,18 +302,18 @@ const SortingVisualizer = () => {
     const fontSize = Math.min(width / 5, height / 2); // Adjust divisor as needed
     const textAnchor = width > 20 ? 'middle' : 'start'; // Adjust 20 based on minimum bar width you want to display label
     const labelColor = value > 10 ? '#fff' : '#000'; // Adjust 10 based on minimum value you want to display label
-        let barColor = "#8884d8"; // Default bar color
+        let barColor = "hsl(var(--default))"; // Default bar color
 
         if (activeIndices.includes(index)) {
-            barColor = 'hsl(var(--active-comparison))'; // Active comparison color
+            barColor = '#FFD700'; // Active comparison color
         }
 
         if (swapIndices.includes(index)) {
-            barColor = 'hsl(var(--swap))'; // Swap color
+            barColor = '#FF4C4C'; // Swap color
         }
 
         if (sortedIndices.includes(index)) {
-            barColor = 'hsl(var(--sorted))'; // Sorted color
+            barColor = '#4CAF50'; // Sorted color
         }
 
     return (
@@ -331,18 +331,18 @@ const SortingVisualizer = () => {
   };
 
     const getBarColor = (index: number): string => {
-        let barColor = "#8884d8"; // Default bar color
+        let barColor = "hsl(var(--default))"; // Default bar color
 
         if (activeIndices.includes(index)) {
-            barColor = 'hsl(var(--active-comparison))'; // Active comparison color
+            barColor = '#FFD700'; // Active comparison color
         }
 
         if (swapIndices.includes(index)) {
-            barColor = 'hsl(var(--swap))'; // Swap color
+            barColor = '#FF4C4C'; // Swap color
         }
 
         if (sortedIndices.includes(index)) {
-            barColor = 'hsl(var(--sorted))'; // Sorted color
+            barColor = '#4CAF50'; // Sorted color
         }
 
         return barColor;
