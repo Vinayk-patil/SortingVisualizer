@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { ChevronLeft, ChevronRight, Play, Pause } from "lucide-react";
-import { Chart, CartesianGrid, Line, LineChart, Tooltip, XAxis, YAxis } from 'recharts';
+import { BarChart, Bar, CartesianGrid, Tooltip, XAxis, YAxis } from 'recharts';
 
 const SortingVisualizer = () => {
   const [arraySize, setArraySize] = useState(50);
@@ -350,13 +350,13 @@ const SortingVisualizer = () => {
 
           {/* Bar Visualization */}
           <div className="relative w-full h-64 bg-muted rounded-md flex items-center justify-center overflow-hidden">
-            <LineChart width={500} height={300} data={chartData}>
+            <BarChart width={500} height={300} data={chartData}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="index" />
               <YAxis />
               <Tooltip />
-              <Line type="monotone" dataKey="value" stroke="#8884d8" activeDot={{ r: 8 }} />
-            </LineChart>
+              <Bar dataKey="value" fill="#8884d8" />
+            </BarChart>
           </div>
 
           {/* Textual Explanation */}
