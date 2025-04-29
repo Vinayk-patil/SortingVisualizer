@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
@@ -9,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { ChevronLeft, ChevronRight, Play, Pause } from "lucide-react";
-import { BarChart, Bar, CartesianGrid, Tooltip, XAxis, YAxis } from 'recharts';
+import { BarChart, Bar, CartesianGrid, Tooltip, XAxis, YAxis, LabelList } from 'recharts';
 
 const SortingVisualizer = () => {
   const [arraySize, setArraySize] = useState(50);
@@ -283,6 +282,26 @@ const SortingVisualizer = () => {
     value: value,
   }));
 
+  const renderCustomLabel = (props: any) => {
+    const { x, y, width, height, value } = props;
+    const fontSize = Math.min(width / 5, height / 2); // Adjust divisor as needed
+    const textAnchor = width > 20 ? 'middle' : 'start'; // Adjust 20 based on minimum bar width you want to display label
+    const labelColor = value > 10 ? '#fff' : '#000'; // Adjust 10 based on minimum value you want to display label
+
+    return (
+      <text
+        x={x + width / 2}
+        y={y + height / 2}
+        fill={labelColor}
+        fontSize={fontSize}
+        textAnchor={textAnchor}
+        dominantBaseline="middle"
+      >
+        {value}
+      </text>
+    );
+  };
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen py-2 bg-secondary">
       <Card className="w-full max-w-4xl shadow-md rounded-lg overflow-hidden">
@@ -355,7 +374,9 @@ const SortingVisualizer = () => {
               <XAxis dataKey="index" />
               <YAxis />
               <Tooltip />
-              <Bar dataKey="value" fill="#8884d8" />
+              <Bar dataKey="value" fill="#8884d8">
+                <LabelList dataKey="value" content={renderCustomLabel} />
+              </Bar>
             </BarChart>
           </div>
 
